@@ -7,7 +7,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import pageobject.ConstructorPage;
 
-public class ConstructorTest {
+public class ConstructorTest extends BaseTest {
     private WebDriver driver;
     private final String baseUrl = "https://stellarburgers.education-services.ru/";
 

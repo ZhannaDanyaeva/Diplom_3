@@ -10,7 +10,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import pageobject.RegisterPage;
 import java.time.Duration;
 
-public class RegisterTest {
+public class RegisterTest extends BaseTest {
     private WebDriver driver;
     private RegisterPage registerPage;
 

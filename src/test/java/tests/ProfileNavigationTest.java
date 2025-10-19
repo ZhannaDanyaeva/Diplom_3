@@ -9,7 +9,7 @@ import org.openqa.selenium.support.ui.*;
 import pageobject.LoginPage;
 import java.time.Duration;
 
-public class ProfileNavigationTest {
+public class ProfileNavigationTest extends BaseTest {
     private WebDriver driver;
     private WebDriverWait wait;
 

@@ -8,7 +8,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import pageobject.LoginPage;
 import pageobject.MainPage;
 
-public class LoginTest {
+public class LoginTest extends BaseTest {
     private WebDriver driver;
 
     @Before
