@@ -7,54 +7,66 @@ import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.*;
 import pageobject.LoginPage;
+
 import java.time.Duration;
 
 public class ProfileNavigationTest extends BaseTest {
     private WebDriver driver;
     private WebDriverWait wait;
+    private final String BASE_URL = "https://stellarburgers.education-services.ru/";
+    private final String EMAIL = "jdanyaeva@yandex.ru";
+    private final String PASSWORD = "123456";
 
     @Before
     public void setUp() {
         WebDriverManager.chromedriver().setup();
         driver = new ChromeDriver();
         wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-        driver.get("https://stellarburgers.education-services.ru/");
+        driver.manage().window().maximize();
+        driver.get(BASE_URL);
+    }
+
+    private void login() {
+        driver.findElement(By.xpath("//p[text()='Личный Кабинет']")).click();
+        LoginPage loginPage = new LoginPage(driver);
+        loginPage.login(EMAIL, PASSWORD);
+        wait.until(ExpectedConditions.urlContains("/"));
     }
 
     @Test
-    @DisplayName("Переход в профиль и выход из аккаунта")
-    public void checkProfileNavigationAndLogout() {
-        // Переход на страницу логина
-        driver.findElement(By.xpath("//p[text()='Личный Кабинет']")).click();
+    @DisplayName("Проверка перехода в личный кабинет после авторизации")
+    public void checkProfileNavigationAfterLogin() {
+        login();
 
-        // Логин
-        LoginPage loginPage = new LoginPage(driver);
-        String email = "jdanyaeva@yandex.ru";
-        String password = "123456";
-        loginPage.login(email, password);
-
-        // Ожидание перехода после логина
-        wait.until(ExpectedConditions.urlContains("/"));
-
-        // Переход в профиль
         WebElement profileButton = wait.until(ExpectedConditions.elementToBeClickable(
                 By.xpath("//p[text()='Личный Кабинет']")));
         profileButton.click();
 
-        // Проверяем, что кнопка «Выйти» есть
+        // Проверяем наличие кнопки "Выход"
+        By logoutButton = By.xpath("//button[contains(text(),'Выход')]");
+        WebElement logout = wait.until(ExpectedConditions.visibilityOfElementLocated(logoutButton));
+        Assert.assertTrue("Кнопка выхода не отображается после перехода в профиль", logout.isDisplayed());
+    }
+
+    @Test
+    @DisplayName("Проверка выхода из аккаунта")
+    public void checkLogoutFromProfile() {
+        login();
+
+        WebElement profileButton = wait.until(ExpectedConditions.elementToBeClickable(
+                By.xpath("//p[text()='Личный Кабинет']")));
+        profileButton.click();
+
         By logoutButton = By.xpath("//button[contains(text(),'Выйти') or contains(text(),'Выход')]");
-        try {
-            WebElement logout = wait.until(ExpectedConditions.visibilityOfElementLocated(logoutButton));
-            Assert.assertTrue("Кнопка выхода не отображается после логина", logout.isDisplayed());
+        WebElement logout = wait.until(ExpectedConditions.elementToBeClickable(logoutButton));
+        logout.click();
 
-            // Клик по кнопке выхода
-            logout.click();
-            wait.until(ExpectedConditions.urlContains("/login"));
-            Assert.assertTrue("Не произошло выхода из аккаунта", driver.getCurrentUrl().contains("/login"));
-
-        } catch (TimeoutException e) {
-            Assert.fail("Кнопка выхода не найдена!");
-        }
+        // Проверяем редирект на страницу логина
+        wait.until(ExpectedConditions.urlContains("/login"));
+        Assert.assertTrue(
+                "Не произошло выхода из аккаунта — URL некорректный: " + driver.getCurrentUrl(),
+                driver.getCurrentUrl().contains("/login")
+        );
     }
 
     @After

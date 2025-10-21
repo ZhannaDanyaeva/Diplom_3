@@ -8,7 +8,7 @@ import java.time.Duration;
 
 public class ProfilePage {
     private final WebDriver driver;
-    private final By logoutButton = By.xpath("//button[text()='Выход' or text()='Выйти']");
+    private final By logoutButton = By.xpath("//button[text()='Выход']");
 
     public ProfilePage(WebDriver driver) {
         this.driver = driver;

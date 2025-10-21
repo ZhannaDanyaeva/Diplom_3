@@ -10,6 +10,7 @@ import pageobject.ConstructorPage;
 public class ConstructorTest extends BaseTest {
     private WebDriver driver;
     private final String baseUrl = "https://stellarburgers.education-services.ru/";
+    private ConstructorPage constructorPage;
 
     @Before
     public void setUp() {
@@ -17,19 +18,28 @@ public class ConstructorTest extends BaseTest {
         driver = new ChromeDriver();
         driver.manage().window().maximize();
         driver.get(baseUrl);
+        constructorPage = new ConstructorPage(driver);
     }
 
     @Test
-    @DisplayName("Проверка вкладок 'Булки', 'Соусы', 'Начинки' в конструкторе")
-    public void checkConstructorTabs() {
-        ConstructorPage constructorPage = new ConstructorPage(driver);
-
+    @DisplayName("Проверка перехода на вкладку 'Соусы'")
+    public void checkSaucesTab() {
         constructorPage.clickSaucesTab();
         Assert.assertTrue("Раздел 'Соусы' не выбран", constructorPage.isSaucesTabActive());
+    }
 
+    @Test
+    @DisplayName("Проверка перехода на вкладку 'Начинки'")
+    public void checkFillingsTab() {
         constructorPage.clickFillingsTab();
         Assert.assertTrue("Раздел 'Начинки' не выбран", constructorPage.isFillingsTabActive());
+    }
 
+    @Test
+    @DisplayName("Проверка перехода на вкладку 'Булки'")
+    public void checkBunsTab() {
+        // Так как вкладка 'Булки' выбрана по умолчанию, сначала переключаемся на другую
+        constructorPage.clickSaucesTab();
         constructorPage.clickBunsTab();
         Assert.assertTrue("Раздел 'Булки' не выбран", constructorPage.isBunsTabActive());
     }
